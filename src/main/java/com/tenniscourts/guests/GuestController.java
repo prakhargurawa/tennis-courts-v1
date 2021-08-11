@@ -1,8 +1,6 @@
 package com.tenniscourts.guests;
 
 import com.tenniscourts.config.BaseRestController;
-
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -14,9 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Api("Guest Management")
 @AllArgsConstructor
+@RestController
+@RequestMapping("/guest")
 public class GuestController extends BaseRestController {
 
     private final GuestService guestService;
@@ -43,7 +46,6 @@ public class GuestController extends BaseRestController {
         return ResponseEntity.ok(guestService.findGuestByName(guestName));
     }
 
-
     @GetMapping("/findAllGuest")
     @ApiOperation("To All Guest")
     @ApiResponse(code = 200, message = "Successfully Found All Guest")
@@ -54,10 +56,9 @@ public class GuestController extends BaseRestController {
     @PutMapping(value = "/update/{GuestId}")
     @ApiOperation("To Update a Guest")
     @ApiResponse(code = 200, message = "Successfully Updated Guest")
-    public ResponseEntity<GuestDTO> updateGuest(GuestDTO guestDTO) {
+    public ResponseEntity<GuestDTO> updateGuest(@RequestBody GuestDTO guestDTO) {
         return ResponseEntity.ok(guestService.updateGuest(guestDTO));
     }
-
 
     @DeleteMapping(value = "/delete/{GuestId}")
     @ApiOperation(value="Delete a Guest By Id")
@@ -66,7 +67,4 @@ public class GuestController extends BaseRestController {
         guestService.deleteGuestById(guestId);
         return ResponseEntity.noContent().build();
     }
-
-
-
 }

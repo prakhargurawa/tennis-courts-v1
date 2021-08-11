@@ -10,11 +10,14 @@ import org.springframework.http.MediaType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
-
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Api("Tennis Court Controller")
 @AllArgsConstructor
+@RestController // https://www.baeldung.com/spring-controller-vs-restcontroller
+@RequestMapping("/tennis-court")
 public class TennisCourtController extends BaseRestController {
 
     private final TennisCourtService tennisCourtService;
@@ -26,7 +29,7 @@ public class TennisCourtController extends BaseRestController {
         return ResponseEntity.created(locationByEntity(tennisCourtService.addTennisCourt(tennisCourtDTO).getId())).build();
     }
 
-    @GetMapping("/findTennisCourtById/{tennisCourtId}")
+    @GetMapping("/findTennisCourtById/{tennisCourtId}",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("To Find Tennis Court By ID")
     @ApiResponse(code = 200, message = "Successfully Found Tennis Court By ID")
     public ResponseEntity<TennisCourtDTO> findTennisCourtById(@PathVariable("tennisCourtId") Long tennisCourtId) {

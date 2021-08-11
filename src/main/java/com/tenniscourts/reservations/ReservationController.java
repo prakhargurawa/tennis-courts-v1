@@ -12,6 +12,8 @@ import javax.validation.Valid;
 
 @Api("Reservation Controller")
 @AllArgsConstructor
+@RestController
+@RequestMapping("/reservation")
 public class ReservationController extends BaseRestController {
 
     private final ReservationService reservationService;

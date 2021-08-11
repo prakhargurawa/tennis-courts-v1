@@ -19,6 +19,7 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 configurations {
@@ -42,4 +43,13 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     implementation group: 'org.mapstruct', name: 'mapstruct-jdk8', version: '1.2.0.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.2.0.Final'
+
+    //testCompile('org.junit.jupiter:junit-jupiter-api:5.3.1')
+    //testCompile('org.junit.jupiter:junit-jupiter-engine:5.3.1')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
 }
+/*
+test {
+    useJUnitPlatform()
+}*/

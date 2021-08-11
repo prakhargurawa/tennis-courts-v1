@@ -1,10 +1,6 @@
 package com.tenniscourts.guests;
 
 import com.tenniscourts.exceptions.EntityNotFoundException;
-import com.tenniscourts.schedules.CreateScheduleRequestDTO;
-import com.tenniscourts.schedules.ScheduleDTO;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 

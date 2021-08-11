@@ -3,7 +3,10 @@ package com.tenniscourts.reservations;
 import com.tenniscourts.exceptions.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import com.tenniscourts.guests.GuestMapper;
+import com.tenniscourts.guests.GuestService;
+import com.tenniscourts.schedules.ScheduleMapper;
+import com.tenniscourts.schedules.ScheduleService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -16,8 +19,24 @@ public class ReservationService {
 
     private final ReservationMapper reservationMapper;
 
+    private final GuestService guestService;
+
+    private final GuestMapper guestMapper;
+
+    private final ScheduleService scheduleService;
+
+    private final ScheduleMapper scheduleMapper;
+
     public ReservationDTO bookReservation(CreateReservationRequestDTO createReservationRequestDTO) {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
+        Reservation bookedReservation = Reservation.builder()
+                .guest(guestMapper.map(guestService.findGuestById(createReservationRequestDTO.getGuestId())))
+                .schedule(scheduleMapper.map(scheduleService.findSchedule(createReservationRequestDTO.getScheduleId())))
+                .reservationStatus(ReservationStatus.READY_TO_PLAY)
+                .value(BigDecimal.ZERO)
+                .build();
+
+        return reservationMapper.map(reservationRepository.save(bookedReservation));
     }
 
     public ReservationDTO findReservation(Long reservationId) {
@@ -78,12 +97,15 @@ public class ReservationService {
         //ReservationDTO reservationDTO = findReservation(previousReservationId);
         //Reservation previousReservation = reservationMapper.map(reservationDTO);
 
-        Reservation previousReservation = cancel(previousReservationId);
+        //Reservation previousReservation = cancel(previousReservationId);
+        Reservation previousReservation = reservationMapper.map(findReservation(previousReservationId));
 
         if (scheduleId.equals(previousReservation.getSchedule().getId())) {
             throw new IllegalArgumentException("Cannot reschedule to the same slot.");
         }
 
+        //Reservation previousReservation = cancel(previousReservationId);
+        previousReservation = cancel(previousReservationId);
         previousReservation.setReservationStatus(ReservationStatus.RESCHEDULED);
         reservationRepository.save(previousReservation);
 

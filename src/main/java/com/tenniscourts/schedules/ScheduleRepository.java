@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
+    Schedule findFirstById(Long scheduleId);
+
     @Query("select * from schedule where s.tennisCourtId order by StartDateTime")
     List<Schedule> findByTennisCourt_IdOrderByStartDateTime(Long id);
 
