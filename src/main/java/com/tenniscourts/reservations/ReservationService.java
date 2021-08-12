@@ -10,6 +10,8 @@ import com.tenniscourts.schedules.ScheduleService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -81,10 +83,22 @@ public class ReservationService {
     }
 
     public BigDecimal getRefundValue(Reservation reservation) {
-        long hours = ChronoUnit.HOURS.between(LocalDateTime.now(), reservation.getSchedule().getStartDateTime());
+        long hoursBeforeReservation = ChronoUnit.HOURS.between(LocalDateTime.now(), reservation.getSchedule().getStartDateTime());
+        long minutesBeforeReservation = ChronoUnit.MINUTES.between(LocalDateTime.now(), reservation.getSchedule().getStartDateTime());
 
-        if (hours >= 24) {
-            return reservation.getValue();
+        BigDecimal reservationFee = reservation.getValue();
+
+        if (hoursBeforeReservation >= 24) {
+            return reservationFee;
+        }
+        else if (minutesBeforeReservation >= 720 && minutesBeforeReservation <= 1439) {
+            return reservationFee.multiply(new BigDecimal(0.75)); // keep 1/4 of the deposit if cancelled/rescheduled between 12 and 23:59 hours in advance
+        }
+        else if (minutesBeforeReservation > 120 && minutesBeforeReservation <= 719) {
+            return reservationFee.multiply(new BigDecimal(0.50)); // keep 1/2 of the deposit if cancelled/rescheduled between 2 and 11:59 hours in advance
+        }
+        else if (minutesBeforeReservation >= 1 && minutesBeforeReservation < 120) {
+            return reservationFee.multiply(new BigDecimal(0.25)); // keep 3/4 of the deposit if cancelled/rescheduled between 1 minute and 2 hours in advance
         }
 
         return BigDecimal.ZERO;
@@ -115,5 +129,9 @@ public class ReservationService {
                 .build());
         newReservation.setPreviousReservation(reservationMapper.map(previousReservation));
         return newReservation;
+    }
+
+    public List<ReservationDTO> findAllReservations() {
+        return reservationRepository.findAll().stream().map(reservationMapper::map).collect(Collectors.toList());
     }
 }

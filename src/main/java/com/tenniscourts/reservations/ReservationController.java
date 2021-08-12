@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import javax.validation.Valid;
 
 @Api("Reservation Controller")
@@ -45,4 +45,12 @@ public class ReservationController extends BaseRestController {
     public ResponseEntity<ReservationDTO> rescheduleReservation(@RequestParam(name = "reservationId") Long reservationId,@RequestParam(name = "scheduleId")  Long scheduleId) {
         return ResponseEntity.ok(reservationService.rescheduleReservation(reservationId, scheduleId));
     }
+
+    @GetMapping(value = "/findAllReservations")
+    @ApiOperation(value="To get all previous Reservations")
+    @ApiResponse(code = 200, message = "Reservation(s) found")
+    public ResponseEntity<List<ReservationDTO>> findAllReservations() {
+        return ResponseEntity.ok(reservationService.findAllReservations());
+    }
+
 }
